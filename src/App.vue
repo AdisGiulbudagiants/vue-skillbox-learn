@@ -1,7 +1,11 @@
 <template>
   <div class="container">
-    <FormCreate />
-    <WishList :cards="cards" />
+    <!-- <FormCreate @set-card="addCard" /> -->
+    <FormEdit
+      :card="cardForEdit"
+      @set-card="updateCard"
+      @save-card="saveCard" />
+    <WishList :cards="cards" @click-by-card="openCardForEdit" />
   </div>
 </template>
 
@@ -9,6 +13,7 @@
 import { ref } from "vue"
 import WishList from "./components/WishList.vue"
 import FormCreate from "./components/FormCreate.vue"
+import FormEdit from "./components/FormEdit.vue"
 
 const cards = ref([
   {
@@ -30,6 +35,30 @@ const cards = ref([
     completed: false,
   },
 ])
+
+const cardForEdit = ref({
+  id: 0,
+  title: "",
+  description: "",
+  completed: false,
+})
+
+// const addCard = (card) => {
+//   cards.value.push(card)
+// }
+const updateCard = (card) => {
+  cardForEdit.value = card
+}
+const saveCard = () => {
+  const newCard = Object.assign({}, cardForEdit.value)
+  cards.value = cards.value.map((el) => {
+    return el.id === newCard.id ? newCard : el
+  })
+}
+
+const openCardForEdit = (card) => {
+  cardForEdit.value = Object.assign({}, card)
+}
 </script>
 
 <style scoped>
