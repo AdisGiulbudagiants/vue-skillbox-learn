@@ -5,7 +5,11 @@
       :card="cardForEdit"
       @set-card="updateCard"
       @save-card="saveCard" />
-    <WishList :cards="cards" @click-by-card="openCardForEdit" />
+    <WishList
+      v-if="!cardsIsLoading"
+      :cards="cards"
+      @click-by-card="openCardForEdit" />
+    <img v-else src="/loading.gif" alt="loading" width="200" />
   </div>
 </template>
 
@@ -15,26 +19,37 @@ import WishList from "./components/WishList.vue"
 import FormCreate from "./components/FormCreate.vue"
 import FormEdit from "./components/FormEdit.vue"
 
-const cards = ref([
-  {
-    id: 1,
-    title: "Ноутбук",
-    description: "Я хочу получить в подарок новый ноутбук",
-    completed: false,
-  },
-  {
-    id: 2,
-    title: "Наушники",
-    description: "Я хочу получить в подарок наушники для ноутбука",
-    completed: true,
-  },
-  {
-    id: 3,
-    title: "Мышка",
-    description: "Я хочу получить в подарок мышку для ноутбука",
-    completed: false,
-  },
-])
+const cards = ref([])
+const cardsIsLoading = ref(false)
+
+const loadCards = () => {
+  cardsIsLoading.value = true
+  setTimeout(() => {
+    cards.value = [
+      {
+        id: 1,
+        title: "Ноутбук",
+        description: "Я хочу получить в подарок новый ноутбук",
+        completed: false,
+      },
+      {
+        id: 2,
+        title: "Наушники",
+        description: "Я хочу получить в подарок наушники для ноутбука",
+        completed: true,
+      },
+      {
+        id: 3,
+        title: "Мышка",
+        description: "Я хочу получить в подарок мышку для ноутбука",
+        completed: false,
+      },
+      (cardsIsLoading.value = false),
+    ]
+  }, 2000)
+}
+
+loadCards()
 
 const cardForEdit = ref({
   id: 0,
@@ -46,6 +61,7 @@ const cardForEdit = ref({
 // const addCard = (card) => {
 //   cards.value.push(card)
 // }
+
 const updateCard = (card) => {
   cardForEdit.value = card
 }
